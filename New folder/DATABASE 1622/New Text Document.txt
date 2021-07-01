@@ -1,0 +1,263 @@
+create database LIBRARY
+use LIBRARY
+
+create table Reader
+(
+	ReaderID char(10) not null primary key,
+	ReaderName varchar(50) not null,
+	Phone int,
+	Address char(10) not null
+)
+INSERT INTO Reader VALUES ('C001','VO NHUT HUY','0947605978','VINH LONG')
+INSERT INTO Reader VALUES ('C002','NGUYEN MINH TU','0972078173','DONG THAP')
+INSERT INTO Reader VALUES ('C003','PHAM CAO NGUYEN','0981424285','VINH LONG')
+select * from Reader
+
+create table Publisher
+(
+	PublisherID varchar(20) not null primary key,
+	PublisherName varchar(20) not null
+)
+INSERT INTO Publisher VALUES ('D001','HCM')
+INSERT INTO Publisher VALUES ('D002','HN')
+INSERT INTO Publisher VALUES ('D003','HCM')
+select * from Publisher
+
+create table Book
+(
+	BookID char(10) not null primary key,
+	BookName varchar(50) not null,
+	Quantity int not null,
+	Price int,
+	PublisherID varchar(20) not null foreign key references Publisher(PublisherID)
+)
+INSERT INTO Book VALUES ('A001','The Magic of Thinking BIG',50,100000,'D001')
+INSERT INTO Book VALUES ('A002','Secrets of Millionaire Mind',60,500000,'D002')
+INSERT INTO Book VALUES ('A003','The Richest Man in Babylon',40,900000,'D003')
+select * from Book
+
+create table BorrowBook
+(
+	ReaderID char(10) foreign key(ReaderID) references Reader(ReaderID),
+	BookID char(10) foreign key(BookID) references Book(BookID),
+	BorrowDate datetime,
+	ReturnDate datetime,
+	primary key(ReaderID, BookID, BorrowDate)
+)
+INSERT INTO BorrowBook VALUES ('C001','A001','01/11/2020','01/18/2020')
+INSERT INTO BorrowBook VALUES ('C002','A002','09/10/2020','09/17/2020')
+INSERT INTO BorrowBook VALUES ('C003','A003','11/01/2020','11/08/2020')
+select * from BorrowBook
+
+create table Author
+(
+	AuthorID varchar(20) not null primary key,
+	AuthorName varchar(20) not null,
+)
+INSERT INTO Author VALUES ('B001','David J. Schwartz')
+INSERT INTO Author VALUES ('B002','T. Harv Eker')
+INSERT INTO Author VALUES ('B003','George Samuel Clason')
+select * from Author
+
+create table BookAuthor
+(
+	BookID char(10) not null foreign key references Book(BookID),
+	AuthorID varchar(20) not null foreign key references Author(AuthorID),
+	primary key(BookID, AuthorID)
+)
+INSERT INTO BookAuthor VALUES ('A001','B001')
+INSERT INTO BookAuthor VALUES ('A002','B002')
+INSERT INTO BookAuthor VALUES ('A003','B003')
+select * from BookAuthor
+
+
+---------------------------------------------------------select----------------------------------
+-- Display book borrow in November.
+select BookID, BorrowDate from [dbo].[BorrowBook] where month(BorrowDate)=11
+
+-- Display book return reader in September
+select ReaderID, ReturnDate from [dbo].[BorrowBook] where month(ReturnDate)=09
+
+-- Displays book with a quantity greater than 10
+select * from [dbo].[Book]
+where Quantity>10
+
+-- Displays book with price greater than 600000
+select BookID,Price as 'total Price Book'
+from [dbo].[Book]
+where Price>600000
+
+-- Display the sum of all book with quantity above 40.
+select BookID, sum(Quantity) as 'total of all book'
+from [dbo].[Book]
+group by BookID
+having sum(Quantity)>40
+
+
+
+
+
+
+----------------------------------------------------------------INSERT---------------------------------
+--INSERT Reader
+insert into [dbo].[Reader] (ReaderID,ReaderName,Phone,Address)
+values('C004','PHAN BOI CHAU','0909876543','CAN THO')
+select * from Reader
+--INSERT Publisher
+insert into [dbo].[Publisher] (PublisherID,PublisherName)
+values('D006','Can Tho')
+select * from Publisher
+--INSERT Book
+insert into [dbo].[Book] (BookID,BookName, Quantity, Price, PublisherID)
+values('A001','Easy English Writing For Kid',30,1000000,'D001')
+select * from [dbo].[Book]
+--INSERT [dbo].[BookAuthor]
+insert into [dbo].[Publisher] (PublisherID,PublisherName)
+values('D006','Da Nang')
+insert into [dbo].[Book] (BookID,BookName, Quantity, Price, PublisherID)
+values('A005','Summit 2','80',2000000,'D005')
+insert into [dbo].[Author] (AuthorID, AuthorName)
+values ('B005', 'Messi')
+insert into [dbo].[BookAuthor] (BookID, AuthorID)
+values('A005','B005')
+select * from [dbo].[BookAuthor]
+--INSERT [dbo].[Author]
+insert into [dbo].[Author] (AuthorID, AuthorName)
+values ('B006', 'Ronaldo')
+select * from [dbo].[Author]
+--INSERT [dbo].[BorrowBook]
+insert into [dbo].[Reader] (ReaderID,ReaderName,Phone,Address)
+values('C007','Bin','0896693099','HA NOI')
+insert into [dbo].[Publisher] (PublisherID,PublisherName)
+values('D007','HCM')
+insert into [dbo].[Book] (BookID,BookName, Quantity, Price, PublisherID)
+values('A007','RARY ZUKAV THE SEAT OF THE SOUL',85,1500000,'D007')
+Insert into [dbo].[BorrowBook] (ReaderID, BookID, BorrowDate, ReturnDate)
+values ('C007', 'A007', '08/21/2020', '08/30/2020')
+select * from [dbo].[BorrowBook]
+
+
+---------------------------------------------------------------UPDATE--------------------------------
+--UPDATE Reader
+update Reader set ReaderName = 'NGUYEN NGOC NGAN', Address = 'O MON', Phone = 0986250461
+where ReaderID='C004'
+
+select * from Reader
+where ReaderID = 'C007'
+
+--UPDATE [dbo].[Publisher]
+update [dbo].[Publisher] set PublisherID='D004'
+where PublisherName ='Vinh Long'
+select * from [dbo].[Publisher]
+--UPDATE [dbo].[Book]
+update [dbo].[Book] set BookID='A001',BookName='Easy English Writing For Kidss',Quantity=10,Price=250000
+where PublisherID = 'D001'
+select * from [dbo].[Book]
+
+update [dbo].[Book] set BookID = 'A004', Quantity = 10, Price = 200000
+where BookName = 'Easy English Writing For Kid'
+select * from [dbo].[Book]
+--UPDATE [dbo].[Author]
+update [dbo].[Author] set AuthorName ='Wowy'
+where AuthorID='B006'
+select * from [dbo].[Author]
+--UPDATE [dbo].[BorrowBook]
+Update [dbo].[BorrowBook] set ReaderID = 'C007', BorrowDate = '03/15/2020', ReturnDate = '03/20/2020'
+where BookID = 'A007'
+select * from [dbo].[BorrowBook]
+
+
+--------------------------------------------------------------DELETE-------------------------------------
+-- DELETE [dbo].[Reader]
+DELETE from [dbo].[Reader] where ReaderID = 'C004'
+select * from Reader
+-- DELETE [dbo].[Publisher]
+DELETE from [dbo].[BorrowBook] where BookID ='A001'
+DELETE from [dbo].[BookAuthor] where BookID='A001'
+DELETE from [dbo].[Book] where BookID='A001'
+DELETE FROM [dbo].[Publisher] WHERE PublisherID = 'D007'
+select * from [dbo].[Publisher]
+-- DELETE [dbo].[Book]
+DELETE from [dbo].[Book] where BookID = 'A007'
+select * from [dbo].[Book]
+-- DELETE [dbo].[BookAuthor]
+DELETE from [dbo].[BookAuthor] where BookID='A005' and AuthorID ='B005'
+select * from [dbo].[BookAuthor]
+-- DELETE [dbo].[Author]
+Delete from [dbo].[Author] where AuthorID = 'B006'
+select * from [dbo].[Author]
+-- DELETE [dbo].[BorrowBook]
+Delete from [dbo].[BorrowBook] where ReaderID = 'C007'
+select * from [dbo].[BorrowBook]
+select * from [dbo].[Book]
+
+
+---------------------------------Triggers-----------------------------
+go
+--------------------------------------------------------insert---------------------------------------------
+--Verify that book number will be saved in the Book table when the reader enters valid information(<100)
+--Verify that the book number will not be saved in the book table when the reader inserts invalid information(>100)
+create trigger insert_triggers_Bookaa
+on Book
+for insert
+as
+	if (select Quantity from inserted) >100
+begin
+	print ('can not quantity greater than 100')
+	Rollback transaction
+end
+
+--test
+insert into [dbo].[Publisher] values ('D007', 'HN')
+insert into [dbo].[Book] values('A007','summit',200,100000,'D007')
+
+insert into [dbo].[Publisher] values ('D007', 'HN')
+insert into [dbo].[Book] values('A007','summit',50,100000,'D007')
+select * from [dbo].[Book]
+go
+
+---------------------------------------------------------update---------------------------------------------
+--Verify that the book information is saved in the book table when the reader updates valid information
+--Verify that the book information is not saved to the book table when the reader updates the invalid information 
+Create trigger Update_triggers_Bookss
+on Book
+for Update
+as
+if ( select price from inserted) > (select price from deleted)
+begin
+	print('Update failed')
+	Rollback transaction
+end
+
+--test
+update [dbo].[Book]
+set price = 200000
+where BookName = 'The Magic of Thinking BIG'
+
+update [dbo].[Book]
+set price = 50000
+where BookName = 'The Magic of Thinking BIG'
+select * from [dbo].[Book]
+go
+
+----------------------------------------------------------Delete----------------------------------------------
+--Verify that the reader wants to delete the book information by entering a valid BookID code
+Create trigger Delete_triggers_Bookdd
+on [dbo].[Book]
+INSTEAD OF DELETE
+as
+   begin 
+      delete from [dbo].[BorrowBook] where BookID in (select BookID from deleted)
+	  delete from [dbo].[BookAuthor] where BookID in (select BookID from deleted)
+	  delete from [dbo].[Book] where BookID in (select BookId from deleted)
+   end
+
+--test
+Delete From [dbo].[Book] where BookID='A001'
+drop trigger casc_delete
+
+select * from [dbo].[Book]
+select * from[dbo].[BookAuthor]
+select * from [dbo].[BorrowBook]
+select * from[dbo].[Publisher]
+select * from[dbo].[Reader]

@@ -1,0 +1,6 @@
+p5 	
+	Vài của các bên liên quan
+		- đối tác: tunesource
+			  
+			yêu cầu về bảo mật hệ thống (khi làm web nghe nhạc thì đọ bảo mật của trang web nó như nào)
+				- Software requirements are divided into two parts, FRs and NFRs. FRs determine the functionality, while, NFRs determine how a system is supposed to be. In the literature, we have identified that most of the work is related to FRs. NFRs have received less attention by goal-oriented requirements engineering community. The aim of this paper is to present taxonomy of non-functional requirements so that the requirements analyst can easily identify different types of NFRs according to their needs in the early phase of requirements engineering.
